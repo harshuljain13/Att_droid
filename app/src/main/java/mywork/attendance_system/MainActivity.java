@@ -2,11 +2,14 @@ package mywork.attendance_system;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,12 +28,15 @@ public class MainActivity extends Activity implements OnClickListener{
     EditText name_emp;
     EditText emp_id;
     clientservercon csobj;
+    private GestureDetector gestureDetector;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d("x1","x1");
         setContentView(R.layout.activity_main);
         Log.d("x2","x2");
+
+        gestureDetector = new GestureDetector(new SwipeGestureDetector());
         ad=(Button)findViewById(R.id.add1);
         rm=(Button)findViewById(R.id.rem);
         name_emp=(EditText)findViewById(R.id.emp_name);
@@ -38,6 +44,63 @@ public class MainActivity extends Activity implements OnClickListener{
         ad.setOnClickListener(this);
         rm.setOnClickListener(this);
         csobj=new clientservercon();
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (gestureDetector.onTouchEvent(event)) {
+            return true;
+        }
+        return super.onTouchEvent(event);
+    }
+
+    private void onLeftSwipe() {
+        // Do something
+        Intent i=new Intent(this,Emp_status.class);
+        startActivity(i);
+    }
+
+    private void onRightSwipe() {
+        // Do something
+        Toast toast=Toast.makeText(getApplicationContext(),"swipe in left direction",Toast.LENGTH_SHORT);
+        toast.show();
+
+    }
+
+    // Private class for gestures
+    private class SwipeGestureDetector
+            extends GestureDetector.SimpleOnGestureListener {
+        // Swipe properties, you can change it to make the swipe
+        // longer or shorter and speed
+        private static final int SWIPE_MIN_DISTANCE = 120;
+        private static final int SWIPE_MAX_OFF_PATH = 200;
+        private static final int SWIPE_THRESHOLD_VELOCITY = 200;
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2,
+                               float velocityX, float velocityY) {
+            try {
+                float diffAbs = Math.abs(e1.getY() - e2.getY());
+                float diff = e1.getX() - e2.getX();
+
+                if (diffAbs > SWIPE_MAX_OFF_PATH)
+                    return false;
+
+                // Left swipe
+                if (diff > SWIPE_MIN_DISTANCE
+                        && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                    MainActivity.this.onLeftSwipe();
+
+                    // Right swipe
+                } else if (-diff > SWIPE_MIN_DISTANCE
+                        && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                    MainActivity.this.onRightSwipe();
+                }
+            } catch (Exception e) {
+                Log.e("YourActivity", "Error on gestures");
+            }
+            return false;
+        }
     }
 
 
