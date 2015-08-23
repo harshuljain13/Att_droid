@@ -36,6 +36,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:padding="25dp"
+            android:hint="Employee name"
             android:id="@+id/emp_name"
             android:layout_marginTop="20dp"/>
 
@@ -43,6 +44,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:padding="25dp"
+            android:hint="Employee id eg: E1001"
             android:layout_marginTop="20dp"
             android:id="@+id/emp_id"
             />

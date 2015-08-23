@@ -12,6 +12,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.view.View.OnClickListener;
 import android.widget.ProgressBar;
+import android.widget.Toast;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 
 public class MainActivity extends Activity implements OnClickListener{
@@ -58,17 +62,41 @@ public class MainActivity extends Activity implements OnClickListener{
 
         return super.onOptionsItemSelected(item);
     }
-String url="http://hj1610.site40.net/feed_empl.php";
-    String url1,url2;
+
+    String url1;
+    String x,y;
     @Override
     public void onClick(View v)
     {
-        String x= name_emp.getText().toString();
-        String y=emp_id.getText().toString();
+        x= name_emp.getText().toString();
+        y=emp_id.getText().toString();
+        x=x.replaceAll("\\s","_");
+        x=x.toUpperCase();
+        y=y.toUpperCase();
+        if(x.equals("") || y.equals(""))
+        {
+            Toast toast=Toast.makeText(getApplicationContext(),"Complete the details",Toast.LENGTH_SHORT);
+            toast.show();
+            return;
+        }
+        if(x.length()>50 || y.length()>5 || y.length()<5 )
+        {
+            Toast toast=Toast.makeText(getApplicationContext(),"Employee id must be of 5 characters",Toast.LENGTH_SHORT);
+            toast.show();
+            return;
+        }
+        if (y.charAt(0)!='E')
+        {
+            Toast toast=Toast.makeText(getApplicationContext(),"Employee id must start with 'E1001'",Toast.LENGTH_SHORT);
+            toast.show();
+            return;
+
+        }
 switch(v.getId())
 {
     case R.id.add1 :
-        url1=url+"?name="+x+"&id="+y+"&store=1&remove=0";
+
+        url1="?name="+x+"&id="+y+"&store=1&remove=0";
         new AsyncTask<Void,Void,Boolean>()
         {
         ProgressDialog pDialog=new ProgressDialog(MainActivity.this);
@@ -93,7 +121,7 @@ pDialog.dismiss();
         break;
     case R.id.rem :
         //removing from database
-        url2= url+"?name="+x+"&id="+y+"&store=0&remove=1";
+        url1="?name="+x+"&id="+y+"&store=0&remove=1";
         new AsyncTask<Void,Void,Boolean>()
         {
             ProgressDialog pDialog=new ProgressDialog(MainActivity.this);
@@ -106,8 +134,8 @@ pDialog.dismiss();
             }
             public Boolean doInBackground(Void... x)
             {
-                csobj.makehttprequest(url2);
-                Log.d("url",url2);
+                csobj.makehttprequest(url1);
+                Log.d("url",url1);
                 return true;
             }
             public void onPostExecute(Boolean b)

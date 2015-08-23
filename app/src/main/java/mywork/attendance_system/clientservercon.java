@@ -11,28 +11,34 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 
 /**
  * Created by Harshul on 8/22/2015.
  */
 public class clientservercon {
+    String url="http://hj1610.site40.net/feed_empl.php";
+    String urlstring=null;
     public clientservercon()
     {
     }
 
-    public void makehttprequest(String url)
+    public void makehttprequest(String url1)
     {
 
         try {
+            urlstring=url+url1;
             DefaultHttpClient httpClient = new DefaultHttpClient();
 
-            HttpGet httpGet = new HttpGet(url);
+            HttpGet httpGet = new HttpGet(urlstring);
 
             httpClient.execute(httpGet);
-            Log.d("QDROID1", url);
+            Log.d("QDROID1", urlstring);
         }
+
         catch (ClientProtocolException e) {
             e.printStackTrace();
         }  catch (IOException e) {
