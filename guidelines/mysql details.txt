@@ -1,0 +1,10 @@
+hj1610.site40.net
+hj1610
+Harsh123
+
+
+$mysql_host = "mysql3.000webhost.com";
+$mysql_database = "a6269982_1610";
+$mysql_user = "a6269982_hj";
+$mysql_password = "hj1610";
+
