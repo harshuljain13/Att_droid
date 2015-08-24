@@ -2,6 +2,7 @@ package mywork.attendance_system;
 
 import android.util.Log;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -9,8 +10,13 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -21,11 +27,13 @@ import java.net.URLEncoder;
  */
 public class clientservercon {
     String urlstring=null;
+    static InputStream is =null;
+    String jsonstr=null;
     public clientservercon()
     {
     }
 
-    public void makehttprequest(String url,String url1)
+    public String makehttprequest(String url,String url1)
     {
 
         try {
@@ -34,8 +42,11 @@ public class clientservercon {
 
             HttpGet httpGet = new HttpGet(urlstring);
 
-            httpClient.execute(httpGet);
-            Log.d("QDROID1", urlstring);
+            HttpResponse hresponse= httpClient.execute(httpGet);
+            HttpEntity hentity=hresponse.getEntity();
+            is=hentity.getContent();
+            //Log.d("att_droid", String.valueOf(is));
+            Log.d("att_droid1", urlstring);
 
         }
 
@@ -44,5 +55,23 @@ public class clientservercon {
         }  catch (IOException e) {
             e.printStackTrace();
         }
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"), 8);
+            StringBuilder sb = new StringBuilder();
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+            is.close();
+            jsonstr=sb.toString();
+
+        }
+        catch(Exception e)
+        {
+            Log.e("Buffer Error", "Error converting result " + e.toString());
+        }
+
+
+        return jsonstr;
     }
 }

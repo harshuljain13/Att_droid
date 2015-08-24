@@ -1,5 +1,6 @@
 package mywork.attendance_system;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -10,22 +11,43 @@ import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-public class Emp_status extends ActionBarActivity {
+import java.util.ArrayList;
+import java.util.List;
+
+
+public class Emp_status extends Activity {
+
     private GestureDetector gestureDetector;
     clientservercon conobj;
     String url="http://hj1610.site40.net/get_update_empl.php";
     String url1;
+    JSONObject jobj;
+    JSONArray jarray;
+    ArrayList<String> empname_id;
+    ListView emview;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_emp_status);
         gestureDetector = new GestureDetector(new SwipeGestureDetector());
         conobj=new clientservercon();
+        jobj=new JSONObject();
+        empname_id=new ArrayList<String>();
+
         new AsyncTask<Void,Void,Boolean>() {
+
             ProgressDialog pdialog=new ProgressDialog(Emp_status.this);
+
             public void onPreExecute()
             {
                 pdialog.setTitle("employees");
@@ -33,18 +55,44 @@ public class Emp_status extends ActionBarActivity {
                 pdialog.setIndeterminate(true);
                 pdialog.show();
             }
+
             public Boolean doInBackground(Void...x)
-        {
+          {
             url1="";
-            conobj.makehttprequest(url,url1);
+            int i=0;
+            String jstring=conobj.makehttprequest(url,url1);
+            Log.d("js",jstring);
+               try
+              {
+                jarray=new JSONArray(jstring);
+                for(i=0;i<jarray.length();i++)
+                  {
+                    jobj=jarray.getJSONObject(i);
+                    empname_id.add(String.valueOf(jobj.getString("Name") +"-"+jobj.getString("Maker_id")) );
+                         Log.d("empname", empname_id.get(i));
+                  }
+              }
+                catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
             return true;
-        }
-            public void onPostExecute(Boolean b)
+          }
+
+        public void onPostExecute(Boolean b)
             {
                 pdialog.dismiss();
+                emview=(ListView)findViewById(R.id.listv);
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(Emp_status.this,android.R.layout.simple_list_item_1, empname_id);
+                emview.setAdapter(adapter);
+
+
             }
 
         }.execute();
+
+
+
     }
 
     @Override
