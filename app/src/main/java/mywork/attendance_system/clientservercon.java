@@ -20,13 +20,12 @@ import java.net.URLEncoder;
  * Created by Harshul on 8/22/2015.
  */
 public class clientservercon {
-    String url="http://hj1610.site40.net/feed_empl.php";
     String urlstring=null;
     public clientservercon()
     {
     }
 
-    public void makehttprequest(String url1)
+    public void makehttprequest(String url,String url1)
     {
 
         try {
@@ -37,6 +36,7 @@ public class clientservercon {
 
             httpClient.execute(httpGet);
             Log.d("QDROID1", urlstring);
+
         }
 
         catch (ClientProtocolException e) {

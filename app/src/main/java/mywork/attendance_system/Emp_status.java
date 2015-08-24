@@ -1,6 +1,8 @@
 package mywork.attendance_system;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,11 +15,36 @@ import android.widget.Toast;
 
 public class Emp_status extends ActionBarActivity {
     private GestureDetector gestureDetector;
+    clientservercon conobj;
+    String url="http://hj1610.site40.net/get_update_empl.php";
+    String url1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_emp_status);
         gestureDetector = new GestureDetector(new SwipeGestureDetector());
+        conobj=new clientservercon();
+        new AsyncTask<Void,Void,Boolean>() {
+            ProgressDialog pdialog=new ProgressDialog(Emp_status.this);
+            public void onPreExecute()
+            {
+                pdialog.setTitle("employees");
+                pdialog.setMessage("getting List");
+                pdialog.setIndeterminate(true);
+                pdialog.show();
+            }
+            public Boolean doInBackground(Void...x)
+        {
+            url1="";
+            conobj.makehttprequest(url,url1);
+            return true;
+        }
+            public void onPostExecute(Boolean b)
+            {
+                pdialog.dismiss();
+            }
+
+        }.execute();
     }
 
     @Override
@@ -38,6 +65,7 @@ public class Emp_status extends ActionBarActivity {
         // Do something
         Intent i=new Intent(this,MainActivity.class);
         startActivity(i);
+        finish();
 
     }
 

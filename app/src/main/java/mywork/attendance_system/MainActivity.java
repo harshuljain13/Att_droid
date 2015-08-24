@@ -29,6 +29,7 @@ public class MainActivity extends Activity implements OnClickListener{
     EditText emp_id;
     clientservercon csobj;
     private GestureDetector gestureDetector;
+    String url="http://hj1610.site40.net/feed_empl.php";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +59,7 @@ public class MainActivity extends Activity implements OnClickListener{
         // Do something
         Intent i=new Intent(this,Emp_status.class);
         startActivity(i);
+        finish();
     }
 
     private void onRightSwipe() {
@@ -172,7 +174,7 @@ switch(v.getId())
             }
         public Boolean doInBackground(Void...x)
             {
-            csobj.makehttprequest(url1);
+            csobj.makehttprequest(url,url1);
             Log.d("url",url1);
                 return true;
                 }
@@ -197,7 +199,7 @@ pDialog.dismiss();
             }
             public Boolean doInBackground(Void... x)
             {
-                csobj.makehttprequest(url1);
+                csobj.makehttprequest(url,url1);
                 Log.d("url",url1);
                 return true;
             }

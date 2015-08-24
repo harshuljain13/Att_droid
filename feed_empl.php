@@ -22,15 +22,15 @@ mysql_connect($servername,$username,$password);
 
 if($storevar=="1" && $removevar=='0')
 {
-echo "insert values";
+//echo "insert values";
 $query1="insert into Emp_entries values('$emp_name','$emp_id')";
 mysql_query($query1);
 }
 
 if($storevar=='0' && $removevar=='1')
 {
-echo "remove values";
-$query2="delete from Emp_entries where Maker_id=$emp_id";
+//echo "remove values";
+$query2="DELETE FROM Emp_entries WHERE CONVERT(Emp_entries.Maker_id USING UTF8)='$emp_id' LIMIT 1";
 mysql_query($query2);
 }
 
