@@ -11,7 +11,10 @@ import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -27,13 +30,18 @@ import java.util.List;
 public class Emp_status extends Activity {
 
     private GestureDetector gestureDetector;
+
     clientservercon conobj;
     String url="http://hj1610.site40.net/get_update_empl.php";
     String url1;
+
     JSONObject jobj;
     JSONArray jarray;
+
     ArrayList<String> empname_id;
+    ArrayList<Boolean> status;
     ListView emview;
+    Button b1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +51,8 @@ public class Emp_status extends Activity {
         conobj=new clientservercon();
         jobj=new JSONObject();
         empname_id=new ArrayList<String>();
+        status=new ArrayList<Boolean>();
+        emview=(ListView)findViewById(R.id.listv);
 
         new AsyncTask<Void,Void,Boolean>() {
 
@@ -69,6 +79,7 @@ public class Emp_status extends Activity {
                   {
                     jobj=jarray.getJSONObject(i);
                     empname_id.add(String.valueOf(jobj.getString("Name") +"-"+jobj.getString("Maker_id")) );
+                    status.add(false);
                          Log.d("empname", empname_id.get(i));
                   }
               }
@@ -76,24 +87,26 @@ public class Emp_status extends Activity {
                         e.printStackTrace();
                     }
 
+
             return true;
           }
 
         public void onPostExecute(Boolean b)
             {
                 pdialog.dismiss();
-                emview=(ListView)findViewById(R.id.listv);
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(Emp_status.this,android.R.layout.simple_list_item_1, empname_id);
+                Log.d("xx1111","high1");
+                custom_adapter adapter = new custom_adapter(Emp_status.this, empname_id,status);
+                Log.d("xy1111","high2");
                 emview.setAdapter(adapter);
-
-
             }
 
         }.execute();
 
-
-
     }
+
+
+
+
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -123,7 +136,7 @@ public class Emp_status extends Activity {
         // Swipe properties, you can change it to make the swipe
         // longer or shorter and speed
         private static final int SWIPE_MIN_DISTANCE = 120;
-        private static final int SWIPE_MAX_OFF_PATH = 200;
+        private static final int SWIPE_MAX_OFF_PATH = 300;
         private static final int SWIPE_THRESHOLD_VELOCITY = 200;
 
         @Override
