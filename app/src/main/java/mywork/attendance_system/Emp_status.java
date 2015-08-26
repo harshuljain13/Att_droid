@@ -40,8 +40,9 @@ public class Emp_status extends Activity {
 
     ArrayList<String> empname_id;
     ArrayList<Boolean> status;
+    ArrayList<String>status1;
     ListView emview;
-    Button b1;
+    Button b1,sub;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +53,9 @@ public class Emp_status extends Activity {
         jobj=new JSONObject();
         empname_id=new ArrayList<String>();
         status=new ArrayList<Boolean>();
+        status1=new ArrayList<String>();
         emview=(ListView)findViewById(R.id.listv);
-
+        sub=(Button)findViewById(R.id.B);
         new AsyncTask<Void,Void,Boolean>() {
 
             ProgressDialog pdialog=new ProgressDialog(Emp_status.this);
@@ -80,6 +82,7 @@ public class Emp_status extends Activity {
                     jobj=jarray.getJSONObject(i);
                     empname_id.add(String.valueOf(jobj.getString("Name") +"-"+jobj.getString("Maker_id")) );
                     status.add(false);
+                    status1.add("A");
                          Log.d("empname", empname_id.get(i));
                   }
               }
@@ -95,15 +98,37 @@ public class Emp_status extends Activity {
             {
                 pdialog.dismiss();
                 Log.d("xx1111","high1");
-                custom_adapter adapter = new custom_adapter(Emp_status.this, empname_id,status);
+                custom_adapter adapter = new custom_adapter(Emp_status.this, empname_id,status1);
                 Log.d("xy1111","high2");
                 emview.setAdapter(adapter);
+
             }
 
         }.execute();
 
-    }
+        sub.setOnClickListener(new View.OnClickListener()
+        {
+            int i=0;
 
+            @Override
+
+            public void onClick(View v) {
+                for (i = 0; i < emview.getCount(); i++) {
+                    LinearLayout v1 = (LinearLayout) emview.getChildAt(i);
+                    Log.d("ivalue",String.valueOf(i));
+                    Button b1 = (Button) v1.findViewById(R.id.B);
+                    if ((b1.getText()).equals("P")) {
+                        status.set(i, true);
+
+                    }
+                    Log.d("bc", String.valueOf(status.get(i)));
+                }
+            }
+        });
+    }
+/*
+
+*/
 
 
 
@@ -186,4 +211,5 @@ public class Emp_status extends Activity {
 
         return super.onOptionsItemSelected(item);
     }
+
 }
