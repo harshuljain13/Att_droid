@@ -40,7 +40,7 @@ public class clientservercon {
         {
             StringEntity se = null;
             try {
-                se = new StringEntity(url1);
+                se = new StringEntity(url1,"UTF-8");
                 }
             catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
@@ -49,6 +49,9 @@ public class clientservercon {
                 DefaultHttpClient httpClient = new DefaultHttpClient();
                 HttpPost httpPost = new HttpPost(url);
                 httpPost.setEntity(se);
+                httpPost.setHeader("Content-Type","application/json");
+                httpPost.setHeader("Accept-Encoding","application/json");
+                httpPost.setHeader("Accept-Language","en-US");
                 HttpResponse hresponse = httpClient.execute(httpPost);
                 HttpEntity hentity = hresponse.getEntity();
                 is = hentity.getContent();
