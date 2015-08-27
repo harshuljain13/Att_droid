@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -12,9 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -35,14 +32,11 @@ public class Emp_status extends Activity {
     String url="http://hj1610.site40.net/get_update_empl.php";
     String url1;
 
-    JSONObject jobj;
-    JSONArray jarray;
-
     ArrayList<String> empname_id;
-    ArrayList<Boolean> status;
-    ArrayList<String>status1;
+    ArrayList<String>status;
     ListView emview;
-    Button b1,sub;
+    Button sub;
+    custom_adapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,10 +44,8 @@ public class Emp_status extends Activity {
         setContentView(R.layout.activity_emp_status);
         gestureDetector = new GestureDetector(new SwipeGestureDetector());
         conobj=new clientservercon();
-        jobj=new JSONObject();
         empname_id=new ArrayList<String>();
-        status=new ArrayList<Boolean>();
-        status1=new ArrayList<String>();
+        status=new ArrayList<String>();
         emview=(ListView)findViewById(R.id.listv);
         sub=(Button)findViewById(R.id.B);
         new AsyncTask<Void,Void,Boolean>() {
@@ -72,17 +64,16 @@ public class Emp_status extends Activity {
           {
             url1="";
             int i=0;
-            String jstring=conobj.makehttprequest(url,url1);
+            String jstring=conobj.makehttprequest(url,"GET",url1);
             Log.d("js",jstring);
                try
               {
-                jarray=new JSONArray(jstring);
+                JSONArray jarray=new JSONArray(jstring);
                 for(i=0;i<jarray.length();i++)
                   {
-                    jobj=jarray.getJSONObject(i);
+                      JSONObject jobj=jarray.getJSONObject(i);
                     empname_id.add(String.valueOf(jobj.getString("Name") +"-"+jobj.getString("Maker_id")) );
-                    status.add(false);
-                    status1.add("A");
+                    status.add("A");
                          Log.d("empname", empname_id.get(i));
                   }
               }
@@ -98,7 +89,7 @@ public class Emp_status extends Activity {
             {
                 pdialog.dismiss();
                 Log.d("xx1111","high1");
-                custom_adapter adapter = new custom_adapter(Emp_status.this, empname_id,status1);
+                adapter = new custom_adapter(Emp_status.this, empname_id,status);
                 Log.d("xy1111","high2");
                 emview.setAdapter(adapter);
 
@@ -108,22 +99,73 @@ public class Emp_status extends Activity {
 
         sub.setOnClickListener(new View.OnClickListener()
         {
-            int i=0;
-
             @Override
 
             public void onClick(View v) {
-                for (i = 0; i < emview.getCount(); i++) {
-                    LinearLayout v1 = (LinearLayout) emview.getChildAt(i);
-                    Log.d("ivalue",String.valueOf(i));
-                    Button b1 = (Button) v1.findViewById(R.id.B);
-                    if ((b1.getText()).equals("P")) {
-                        status.set(i, true);
 
-                    }
-                    Log.d("bc", String.valueOf(status.get(i)));
+                final List<String> emp_name=new ArrayList<String>();
+                final List<String> emp_id=new ArrayList<String>();
+                final int arraysize=empname_id.size();
+                for(String y : empname_id)
+                {
+                    String[] parts=y.split("-");
+                    emp_name.add(parts[0]);
+                    emp_id.add(parts[1]);
                 }
-            }
+                status=adapter.getstatus();
+
+                new AsyncTask<Void,Void,Boolean>()
+                {
+                    ProgressDialog pDialog=new ProgressDialog(Emp_status.this);
+                public void onPreExecute()
+                {
+
+                    pDialog.setTitle("Status");
+                    pDialog.setMessage("sending status");
+                    pDialog.setIndeterminate(true);
+                    pDialog.show();
+
+                }
+                    public Boolean doInBackground(Void...x)
+                    {
+                        int i=0;
+                        //making json
+                        JSONObject employee=new JSONObject();
+                        JSONArray jarray=new JSONArray();
+                        for(i=0;i<arraysize;i++)
+                        {
+                            JSONObject jobj=new JSONObject();
+                            try {
+                                jobj.put("Name",emp_name.get(i));
+                                jobj.put("Maker_id",emp_id.get(i));
+                                jobj.put("status",status.get(i));
+                                jarray.put(jobj);
+                            }
+
+                            catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        try {
+                            employee.put("employees",jarray);
+                            url1=employee.toString();
+                            Log.d("jsonstring1",url1);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        //making connection
+                        conobj.makehttprequest(url,"POST",url1);
+
+                        return true;
+                    }
+                    public void onPostExecute(Boolean b)
+                    {
+                        pDialog.setMessage("status sent");
+                        pDialog.dismiss();
+                    }
+                }.execute();
+                    }
+
         });
     }
 /*

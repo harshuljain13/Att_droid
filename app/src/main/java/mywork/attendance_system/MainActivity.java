@@ -177,7 +177,7 @@ switch(v.getId())
             }
         public Boolean doInBackground(Void...x)
             {
-            csobj.makehttprequest(url,url1);
+            csobj.makehttprequest(url,"GET",url1);
             Log.d("url",url1);
                 return true;
                 }
@@ -202,7 +202,7 @@ pDialog.dismiss();
             }
             public Boolean doInBackground(Void... x)
             {
-                csobj.makehttprequest(url,url1);
+                csobj.makehttprequest(url,"GET",url1);
                 Log.d("url",url1);
                 return true;
             }

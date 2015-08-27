@@ -26,15 +26,14 @@ public class custom_adapter extends ArrayAdapter<String> {
     private LayoutInflater inflater;
    // private int[] colors;
     ArrayList<String> emp;
-
-    ArrayList<String> status;
+    ArrayList<String> stats;
 
     public custom_adapter(Activity activity , ArrayList<String> items,ArrayList<String> statusc)
         {
             super(activity, R.layout.rowlayout, items);
             inflater = activity.getWindow().getLayoutInflater();
             emp=items;
-            status=statusc;
+            stats=statusc;
 
         }
 
@@ -51,7 +50,7 @@ public class custom_adapter extends ArrayAdapter<String> {
         viewHolder = new ViewHolder();
         viewHolder.tview=(TextView)convertView.findViewById(R.id.t1);
         viewHolder.b1=(Button)convertView.findViewById(R.id.A);
-        viewHolder.b1.setText(status.get(position));
+        viewHolder.b1.setText(stats.get(position));
         convertView.setTag(viewHolder);
         final ViewHolder finalViewHolder = viewHolder;
         viewHolder.b1.setOnClickListener(new View.OnClickListener() {
@@ -64,12 +63,11 @@ public class custom_adapter extends ArrayAdapter<String> {
 
                 if((finalViewHolder.b1.getText()).equals("A")) {
                     finalViewHolder.b1.setText("P");
-                    status.set(position,"P");
-                    //          Log.d("statussss",String.valueOf(status.get(position1)));
+                    stats.set(position,"P");
                 }
                 else {
                     finalViewHolder.b1.setText("A");
-                    status.set(position,"A");
+                    stats.set(position,"A");
                 }
             }});
 
@@ -90,5 +88,11 @@ public class custom_adapter extends ArrayAdapter<String> {
             return convertView;
 
         }
+
+
+    public ArrayList<String> getstatus()
+    {
+        return stats;
+    }
 
     }
