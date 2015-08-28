@@ -22,6 +22,10 @@
             android:name=".Emp_status"
             android:label="@string/title_activity_emp_status" >
         </activity>
+        <activity
+            android:name=".employee_progress"
+            android:label="@string/title_activity_employee_progress" >
+        </activity>
     </application>
 
 </manifest>

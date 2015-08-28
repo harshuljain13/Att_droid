@@ -185,8 +185,9 @@ public class Emp_status extends Activity {
 
     private void onLeftSwipe() {
         // Do something
-        Toast toast=Toast.makeText(getApplicationContext(),"swipe in right direction",Toast.LENGTH_SHORT);
-        toast.show();
+        Intent i=new Intent(this,employee_progress.class);
+        startActivity(i);
+        finish();
     }
 
     private void onRightSwipe() {

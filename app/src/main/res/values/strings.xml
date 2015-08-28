@@ -5,4 +5,5 @@
     <string name="action_settings">Settings</string>
     <string name="al">Manage Employees</string>
     <string name="title_activity_emp_status">Emp_status</string>
+    <string name="title_activity_employee_progress">employee_progress</string>
 </resources>
